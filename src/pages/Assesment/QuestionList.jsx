@@ -50,9 +50,10 @@ const columns = [
   { id: "action", label: "Action", minWidth: 100 },
 ];
 
-function createData(question, category, date, action) {
-  return { question, category, date, action };
+function createData(_id, question, category, date, action) {
+  return { _id, question, category, date, action };
 }
+//const serialNumber = index + 1;
 
 export default function QuestionList() {
   const [page, setPage] = React.useState(0);
@@ -72,11 +73,11 @@ export default function QuestionList() {
       try {
         const response = await axios.get("http://localhost:5000/questions");
         const questions = response.data.questions;
-        console.log(questions)
+        console.log(questions);
 
         // Create rows using the createData function
         const newRows = questions.map((question) =>
-          createData(question.title, question.catogery, question.date)
+          createData(question._id, question.title, question.catogery, question.date)
         );
 
         // Update the rows state
@@ -98,20 +99,35 @@ export default function QuestionList() {
     setPage(0);
   };
   //install sweetalert2
-  const deleteUser = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.value) {
-        // deleteApi(id);
-      }
+  // const deleteUser = (id) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You won't be able to revert this!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, delete it!",
+  //   }).then((result) => {
+  //     if (result.value) {
+  //       // deleteApi(id);
+  //     }
+  //   });
+  // };
+
+  // delete question
+  const deleteUser = async (_id) => {
+    // console.log("delete question working");
+    // delete the question
+    const res = await axios.delete(`http://localhost:5000/questions/${_id}`);
+    console.log(res);
+    // update state
+    const newQuestions = [...rows].filter((question) => {
+      return question._id !== _id;
     });
+
+    // set notes
+    setRows(newQuestions);
   };
 
   // need to create filterdata for search bar.
@@ -192,6 +208,9 @@ export default function QuestionList() {
             <TableHead>
               <TableRow>
                 <TableCell align="left" style={{ minWidth: "100px" }}>
+                  Sl no.
+                </TableCell>
+                <TableCell align="left" style={{ minWidth: "100px" }}>
                   Question
                 </TableCell>
                 <TableCell align="left" style={{ minWidth: "100px" }}>
@@ -208,7 +227,9 @@ export default function QuestionList() {
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+                .map((row, index) => {
+                  const serialNumber = index + 1;
+
                   return (
                     <TableRow
                       hover
@@ -216,13 +237,16 @@ export default function QuestionList() {
                       tabIndex={-1}
                       key={row.category}
                     >
-                      <TableCell key={row.id} align={"left"}>
+                      <TableCell key={row._id} align="left">
+                        {serialNumber}
+                      </TableCell>
+                      <TableCell key={row._id} align={"left"}>
                         {row.question}
                       </TableCell>
-                      <TableCell key={row.id} align={"left"}>
+                      <TableCell key={row._id} align={"left"}>
                         {row.category}
                       </TableCell>
-                      <TableCell key={row.id} align={"left"}>
+                      <TableCell key={row._id} align={"left"}>
                         {row.date}
                       </TableCell>
                       <TableCell align="left">
@@ -235,7 +259,7 @@ export default function QuestionList() {
                             }}
                             className="cursor-pointer"
                             onClick={() =>
-                              editData(row.id, row.question, row.category)
+                              editData(row._id, row.question, row.category)
                             }
                           />
                           <DeleteIcon
@@ -245,7 +269,8 @@ export default function QuestionList() {
                               cursor: "pointer",
                             }}
                             onClick={() => {
-                              deleteUser(row.id);
+                              deleteUser(row._id);
+                              console.log(row);
                             }}
                           />
                         </Stack>
