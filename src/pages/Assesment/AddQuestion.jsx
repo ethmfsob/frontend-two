@@ -61,6 +61,7 @@ function AddQuestion({ CloseEvent }) {
       console.log(response.data.question);
       // close the component
       CloseEvent();
+      window.location.reload();
     } catch (error) {
       console.error("Error creating data:", error);
     }
