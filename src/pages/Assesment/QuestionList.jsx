@@ -1,8 +1,4 @@
-// full backend work is their, and searchbar , db connect and other activity.
-
 // import TablePagination from "@mui/material/TablePagination";
-import Swal from "sweetalert2";
-// import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -21,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import Swal from "sweetalert2";
 import AddQuestion from "./AddQuestion";
 import EditQuestion from "./EditQuestion";
 import axios from "axios";
