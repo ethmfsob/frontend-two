@@ -63,6 +63,7 @@ export default function QuestionList() {
   const handleEditOpen = () => setEditOpen(true);
   const handleClose = () => setOpen(false);
   const handleEditClose = () => setEditOpen(false);
+  const [editRowData, setEditRowData] = React.useState(null);
 
   const [rows, setRows] = React.useState([]);
 
@@ -72,7 +73,7 @@ export default function QuestionList() {
       try {
         const response = await axios.get("http://localhost:5000/questions");
         const questions = response.data.questions;
-        console.log(questions);
+        // console.log(questions);
 
         // Create rows using the createData function
         const newRows = questions.map((question) =>
@@ -124,52 +125,7 @@ export default function QuestionList() {
     });
   };
 
-  // need to create filterdata for search bar.
-
-  // update
-  // const [updateForm, setUpdateForm] = React.useState({
-  //   _id: null,
-  //   title: "",
-  //   catogery: "",
-  //   date: "",
-  // });
-
-  // const editData = (id, question, category) => {
-  // console.log(id, question, category);
-  // get current values
-  // setUpdateForm({
-  //   _id: row._id,
-  //   title: row.question,
-  //   catogery: row.category
-  // })
-  // const data = {
-  //   _id: _id,
-  //   title: question,
-  //   catogery: category,
-  // };
-  // for updating the data in the db
-  // setQuestionid(data);
-  // const data = {
-  //   id: id,
-  //   category: category,
-  // };
-  // for updating the data in the db
-  // setQuestionid(data);
-  // handleEditOpen();
-  // };
-
-  // const toggleUpdate = (question) => {
-  //   // get the current question values
-  //   // const res =
-  //   // set the update form
-  //   setUpdateForm({
-  //     title: question.title,
-  //     catogery: question.catogery,
-  //     date: question.date,
-  //     _id: question._id,
-  //   });
-  // };
-  ///////////////////////////////
+  ///////////////////////////////////////////////////////
   // const handleChangePage = (event, newPage) => {
   //   setPage(newPage);
   // };
@@ -178,36 +134,12 @@ export default function QuestionList() {
   //   setRowsPerPage(+event.target.value);
   //   setPage(0);
   // };
-  // const editData = (id,question,category)=>{
-  //   const data = {
-  //       id: id,
-  //       category: category
-  //   };
-  //   // for updating the data in the db
-  //   // setQuestionid(data);
-  //   handleEditOpen();
-  // }
-  // const [updateForm, setUpdateForm] = React.useState({
-  //   _id: null,
-  //   title: "",
-  //   catogery: "",
-  //   date: "",
-  // });
-  // const editData = (id, question, category) => {
-  //   const data = {
-  //     id: id,
-  //     category: category,
-  //   };
+  ////////////////////////////////////////////////////////
 
-  //   // Set the state with the data
-  //   setUpdateForm(data);
-
-  //   // Open the edit modal
-  //   handleEditOpen();
-  // };
-
-  function updateForm() {}
-  function editData() {}
+  const editData = async (row) => {
+    setEditRowData(row);
+    handleEditOpen();
+  };
 
   return (
     <>
@@ -229,7 +161,7 @@ export default function QuestionList() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <EditQuestion CloseEvent={handleEditClose} />
+            <EditQuestion CloseEvent={handleEditClose} row={editRowData} />
           </Box>
         </Modal>
       </div>
@@ -250,7 +182,7 @@ export default function QuestionList() {
             id="combo-box-demo"
             options={rows}
             sx={{ width: 300 }}
-            //   onChange={(e, v) => filterData(v)}
+            // onChange={(e, v) => filterData(v)}
             getOptionLabel={(rows) => rows.n || ""}
             renderInput={(params) => (
               <TextField {...params} size="small" label="Search Products" />
@@ -301,16 +233,11 @@ export default function QuestionList() {
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  console.log(row);
+                  // console.log(row);
                   const serialNumber = index + 1;
 
                   return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.category}
-                    >
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                       <TableCell key={row._id} align="left">
                         {serialNumber}
                       </TableCell>
@@ -332,13 +259,7 @@ export default function QuestionList() {
                               cursor: "pointer",
                             }}
                             className="cursor-pointer"
-                            formData={updateForm}
-                            CloseEvent={handleEditClose}
-                            onClick={
-                              () =>
-                                editData(row._id, row.question, row.category)
-                              // editData(row)
-                            }
+                            onClick={() => editData(row)}
                           />
                           <DeleteIcon
                             style={{
@@ -348,7 +269,7 @@ export default function QuestionList() {
                             }}
                             onClick={() => {
                               deleteUser(row._id);
-                              console.log(row);
+                              // console.log(row);
                             }}
                           />
                         </Stack>
@@ -368,7 +289,6 @@ export default function QuestionList() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         /> */}
-        {console.log(rows)}
       </Paper>
     </>
   );

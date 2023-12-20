@@ -35,167 +35,73 @@ const modules = [
   },
 ];
 
-// function EditQuestion({ fid, CloseEvent }) {
-//   const [question, setQuestion] = useState("");
-//   const [category, setCategory] = useState("");
-
-//   const handleQuestion = (event) => {
-//     setQuestion(event.target.value);
-//   };
-
-//   const handleCategory = (event) => {
-//     setCategory(event.target.value);
-//   };
-
-// //backend code for update the data base with time. make sure edit the whole code.
-
-//   const createData = async()=>{
-//     await addDoc(empCollectionRef,{
-//         question : question,
-//         category : category,
-//         date : moment().format('MMMM Do YYYY, h:mm:ss a'),
-//     });
-//     getUser();
-//     CloseEvent();
-//                                                                                     After connected the database uncomment the below line.
-//      Swal.fire("Submitted!", "Your question has been submitted.","Success");
-//   };
-
-// create a getUser(); to for update the list in db below this line.
-// const handleUpdateQuestion = async () => {
-//   try {
-//     // Assuming fid is the question ID and you are sending the updated data to the server
-//     const response = await axios.put(
-//       `http://localhost:5000/questions/${_id}`,
-//       {
-//         title: question,
-//         catogery: category,
-//         date: moment().format("DD-MM-YYYY dddd"),
-//       }
-//     );
-
-//     // Assuming the server responds with the updated question data
-//     const updatedQuestion = response.data;
-
-//     Swal.fire({
-//       title: "Question Updated!",
-//       text: `New Question: ${updatedQuestion.question}, New Category: ${updatedQuestion.category}`,
-//       icon: "success",
-//     });
-
-//     // Close the modal or perform any other necessary actions
-//     CloseEvent();
-//   } catch (error) {
-//     console.error("Error updating question on the client side:", error);
-//     // Handle the error, show a message to the user, or perform other error-related tasks
-//   }
-// };
-// const [updateForm, setUpdateForm] = useState({
-//   _id: null,
-//   title: "",
-//   catogery: "",
-//   date: "",
-// });
-// const handleUpdateFieldChange = (e) => {
-//   const { value, name } = e.target;
-//   setUpdateForm({
-//     ...updateForm,
-//     [name]: value,
-//   });
-// };
-//////////////////////////////
-// const updateQuestion = async () => {
-//   try {
-//     const response = await axios.put(
-//       `http://localhost:5000/questions/${fid}`,
-//       {
-//         title: question,
-//         catogery: category,
-//         date: moment().format("DD-MM-YYYY dddd"),
-//       }
-//     );
-
-//     const { message, updatedQuestion } = response.data;
-
-//     // Display a simple alert message
-//     alert(message);
-
-//     // Close the modal or perform any other necessary actions
-//     CloseEvent();
-//   } catch (error) {
-//     console.error("Error updating question on the client side:", error);
-//     // Handle the error, show a message to the user, or perform other error-related tasks
-//   }
-// };
-// const updateQuestion = async () => {
-//   try {
-//     const response = await axios.put("http://localhost:5000/questions", {
-//       title: question,
-//       catogery: category,
-//       date: moment().format("DD-MM-YYYY dddd"),
-//     });
-
-//     // Handle the response or update state accordingly
-//     console.log(response.data.question);
-//     // close the component
-//     CloseEvent();
-//     window.location.reload();
-//   } catch (error) {
-//     console.error("Error creating data:", error);
-//   }
-// };
-
-const EditQuestion = ({ CloseEvent, formData }) => {
-  const [question, setQuestion] = useState(formData.title || "");
-  const [category, setCategory] = useState(formData.category || "");
-  console.log(questionId);
+function EditQuestion({ CloseEvent, row }) {
+  const [question, setQuestion] = useState("");
+  const [category, setCategory] = useState("");
 
   useEffect(() => {
-    // Fetch the question details based on the questionId
-    const fetchQuestionDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/questions/${questionId}`
-        );
-        const questionData = response.data.question;
+    // Set initial state values
+    setQuestion(row.question || "");
+    setCategory(row.category || "");
+  }, [row]);
 
-        // Set the state with the fetched question details
-        setQuestion(questionData.title);
-        setCategory(questionData.catogery);
-      } catch (error) {
-        console.error("Error fetching question details:", error);
-      }
-    };
+  const handleQuestion = (event) => {
+    setQuestion(event.target.value);
+  };
 
-    fetchQuestionDetails();
-  }, [questionId]);
+  const handleCategory = (event) => {
+    setCategory(event.target.value);
+  };
 
-  const handleQuestionUpdate = async () => {
+  const handleUpdate = async () => {
     try {
+      // Make sure you pass the question ID along with the updated data
+      const updatedData = {
+        title: question,
+        catogery: category,
+        date: moment().format("DD-MM-YYYY dddd"),
+      };
+
+      // Make an API call to update the question
       const response = await axios.put(
-        `http://localhost:5000/questions/${questionId}`,
-        {
-          title: question,
-          catogery: category,
-          date: moment().format("DD-MM-YYYY dddd"),
-        }
+        `http://localhost:5000/questions/${row._id}`,
+        updatedData
       );
 
+      // Assuming your backend responds with the updated question
       const updatedQuestion = response.data.question;
 
-      Swal.fire({
-        title: "Question Updated!",
-        text: `New Question: ${updatedQuestion.title}, New Category: ${updatedQuestion.catogery}`,
-        icon: "success",
-      });
+      // Handle the updated data as needed
+      console.log("Updated Question:", updatedQuestion);
 
-      // Close the modal or perform any other necessary actions
+      // Close the modal or perform other actions
       CloseEvent();
+      Swal.fire(
+        "Submitted!",
+        "Your question has been submitted.",
+        "Success"
+      ).then(() => window.location.reload());
     } catch (error) {
       console.error("Error updating question:", error);
-      // Handle the error, show a message to the user, or perform other error-related tasks
+      // Handle error, show an alert, etc.
     }
   };
+
+  // //backend code for update the data base with time. make sure edit the whole code.
+
+  //   const createData = async()=>{
+  //     await addDoc(empCollectionRef,{
+  //         question : question,
+  //         category : category,
+  //         date : moment().format('MMMM Do YYYY, h:mm:ss a'),
+  //     });
+  //     getUser();
+  //     CloseEvent();
+  //                                                                                     After connected the database uncomment the below line.
+  //      Swal.fire("Submitted!", "Your question has been submitted.","Success");
+  //   };
+
+  // create a getUser(); to for update the list in db below this line.
 
   return (
     <>
@@ -215,9 +121,8 @@ const EditQuestion = ({ CloseEvent, formData }) => {
           <TextField
             id="standard-basic"
             label="Question"
-            // onChange={handleQuestion}
             value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            onChange={handleQuestion}
             variant="standard"
             sx={{ minWidth: "100%" }}
           />
@@ -230,9 +135,8 @@ const EditQuestion = ({ CloseEvent, formData }) => {
             id="standard-select-currency"
             select
             label="Category"
-            // onChange={handleCategory}
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={handleCategory}
             helperText="Please select the question type"
             variant="standard"
             sx={{ minWidth: "100%" }}
@@ -246,20 +150,18 @@ const EditQuestion = ({ CloseEvent, formData }) => {
         </Grid>
       </Grid>
       <Box height={20} />
-
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h5" align="center">
-            <Button variant="contained" onClick={handleQuestionUpdate}>
+            <Button variant="contained" onClick={handleUpdate}>
               Submit
             </Button>
           </Typography>
         </Grid>
       </Grid>
-
       <Box sx={{ m: 4 }} />
     </>
   );
-};
+}
 
 export default EditQuestion;

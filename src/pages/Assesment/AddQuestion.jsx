@@ -13,7 +13,7 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import moment from "moment";
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
 import axios from "axios";
 
 const modules = [
@@ -38,6 +38,7 @@ const modules = [
 function AddQuestion({ CloseEvent }) {
   const [question, setQuestion] = useState("");
   const [category, setCategory] = useState("");
+  // const [rows, setRows] = useState([]);
 
   const handleQuestion = (event) => {
     setQuestion(event.target.value);
@@ -61,7 +62,14 @@ function AddQuestion({ CloseEvent }) {
       console.log(response.data.question);
       // close the component
       CloseEvent();
-      window.location.reload();
+      Swal.fire(
+        "Submitted!",
+        "Your question has been submitted.",
+        "Success"
+      ).then(() => {
+        // setRows([...rows, response.data.question]);
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Error creating data:", error);
     }
