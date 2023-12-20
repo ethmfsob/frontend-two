@@ -1,5 +1,7 @@
 // full backend work is their, and searchbar , db connect and other activity.
 
+// import TablePagination from "@mui/material/TablePagination";
+import Swal from "sweetalert2";
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -8,12 +10,10 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import Divider from "@mui/material/Divider";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Stack from "@mui/material/Stack";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Swal from "sweetalert2";
 import Box from "@mui/material/Box";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Button from "@mui/material/Button";
@@ -53,7 +53,6 @@ const columns = [
 function createData(_id, question, category, date, action) {
   return { _id, question, category, date, action };
 }
-//const serialNumber = index + 1;
 
 export default function QuestionList() {
   const [page, setPage] = React.useState(0);
@@ -77,7 +76,12 @@ export default function QuestionList() {
 
         // Create rows using the createData function
         const newRows = questions.map((question) =>
-          createData(question._id, question.title, question.catogery, question.date)
+          createData(
+            question._id,
+            question.title,
+            question.catogery,
+            question.date
+          )
         );
 
         // Update the rows state
@@ -90,57 +94,120 @@ export default function QuestionList() {
     fetchData();
   }, []);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  //install sweetalert2
-  // const deleteUser = (id) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You won't be able to revert this!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then((result) => {
-  //     if (result.value) {
-  //       // deleteApi(id);
-  //     }
-  //   });
-  // };
-
   // delete question
   const deleteUser = async (_id) => {
-    // console.log("delete question working");
-    // delete the question
-    const res = await axios.delete(`http://localhost:5000/questions/${_id}`);
-    console.log(res);
-    // update state
-    const newQuestions = [...rows].filter((question) => {
-      return question._id !== _id;
-    });
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.value) {
+        // deleteApi(id);
+        // console.log("delete question working");
+        // delete the question
+        const res = await axios.delete(
+          `http://localhost:5000/questions/${_id}`
+        );
+        console.log(res);
+        // update state
+        const newQuestions = [...rows].filter((question) => {
+          return question._id !== _id;
+        });
 
-    // set notes
-    setRows(newQuestions);
+        // set notes
+        setRows(newQuestions);
+      }
+    });
   };
 
   // need to create filterdata for search bar.
 
-  const editData = (id, question, category) => {
-    const data = {
-      id: id,
-      category: category,
-    };
-    // for updating the data in the db
-    // setQuestionid(data);
-    handleEditOpen();
-  };
+  // update
+  // const [updateForm, setUpdateForm] = React.useState({
+  //   _id: null,
+  //   title: "",
+  //   catogery: "",
+  //   date: "",
+  // });
+
+  // const editData = (id, question, category) => {
+  // console.log(id, question, category);
+  // get current values
+  // setUpdateForm({
+  //   _id: row._id,
+  //   title: row.question,
+  //   catogery: row.category
+  // })
+  // const data = {
+  //   _id: _id,
+  //   title: question,
+  //   catogery: category,
+  // };
+  // for updating the data in the db
+  // setQuestionid(data);
+  // const data = {
+  //   id: id,
+  //   category: category,
+  // };
+  // for updating the data in the db
+  // setQuestionid(data);
+  // handleEditOpen();
+  // };
+
+  // const toggleUpdate = (question) => {
+  //   // get the current question values
+  //   // const res =
+  //   // set the update form
+  //   setUpdateForm({
+  //     title: question.title,
+  //     catogery: question.catogery,
+  //     date: question.date,
+  //     _id: question._id,
+  //   });
+  // };
+  ///////////////////////////////
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
+
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(+event.target.value);
+  //   setPage(0);
+  // };
+  // const editData = (id,question,category)=>{
+  //   const data = {
+  //       id: id,
+  //       category: category
+  //   };
+  //   // for updating the data in the db
+  //   // setQuestionid(data);
+  //   handleEditOpen();
+  // }
+  // const [updateForm, setUpdateForm] = React.useState({
+  //   _id: null,
+  //   title: "",
+  //   catogery: "",
+  //   date: "",
+  // });
+  // const editData = (id, question, category) => {
+  //   const data = {
+  //     id: id,
+  //     category: category,
+  //   };
+
+  //   // Set the state with the data
+  //   setUpdateForm(data);
+
+  //   // Open the edit modal
+  //   handleEditOpen();
+  // };
+
+  function updateForm() {}
+  function editData() {}
 
   return (
     <>
@@ -207,19 +274,25 @@ export default function QuestionList() {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell align="left" style={{ minWidth: "100px" }}>
+                <TableCell
+                  align="left"
+                  style={{ minWidth: "20px", maxWidth: "40px" }}
+                >
                   Sl no.
                 </TableCell>
-                <TableCell align="left" style={{ minWidth: "100px" }}>
+                <TableCell align="left" style={{ minWidth: "150px" }}>
                   Question
                 </TableCell>
-                <TableCell align="left" style={{ minWidth: "100px" }}>
+                <TableCell
+                  align="left"
+                  style={{ minWidth: "50px", maxWidth: "60px" }}
+                >
                   Category
                 </TableCell>
-                <TableCell align="left" style={{ minWidth: "100px" }}>
+                <TableCell align="left" style={{ minWidth: "10px" }}>
                   Date
                 </TableCell>
-                <TableCell align="left" style={{ minWidth: "100px" }}>
+                <TableCell align="left" style={{ minWidth: "60px" }}>
                   Action
                 </TableCell>
               </TableRow>
@@ -228,6 +301,7 @@ export default function QuestionList() {
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
+                  console.log(row);
                   const serialNumber = index + 1;
 
                   return (
@@ -258,8 +332,12 @@ export default function QuestionList() {
                               cursor: "pointer",
                             }}
                             className="cursor-pointer"
-                            onClick={() =>
-                              editData(row._id, row.question, row.category)
+                            formData={updateForm}
+                            CloseEvent={handleEditClose}
+                            onClick={
+                              () =>
+                                editData(row._id, row.question, row.category)
+                              // editData(row)
                             }
                           />
                           <DeleteIcon
@@ -281,7 +359,7 @@ export default function QuestionList() {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
+        {/* <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
           count={rows.length}
@@ -289,7 +367,8 @@ export default function QuestionList() {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        /> */}
+        {console.log(rows)}
       </Paper>
     </>
   );
