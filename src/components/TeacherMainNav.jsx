@@ -64,7 +64,7 @@ export default function TeacherMainNav() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Assesment Tracker
+            Assessment Tracker
           </Typography>
           {auth && (
             <div>
