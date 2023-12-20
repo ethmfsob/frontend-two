@@ -1,17 +1,18 @@
-// import moments for time (npm install moment --save)
-
 import {
   Grid,
   IconButton,
   Typography,
   Box,
-  Modal,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import MenuItem from "@mui/material/MenuItem";
+import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -36,11 +37,12 @@ const modules = [
 ];
 
 function EditQuestion({ CloseEvent, row }) {
+  // state
   const [question, setQuestion] = useState("");
   const [category, setCategory] = useState("");
 
+  // set initial state values
   useEffect(() => {
-    // Set initial state values
     setQuestion(row.question || "");
     setCategory(row.category || "");
   }, [row]);
@@ -55,53 +57,34 @@ function EditQuestion({ CloseEvent, row }) {
 
   const handleUpdate = async () => {
     try {
-      // Make sure you pass the question ID along with the updated data
+      // updated data
       const updatedData = {
         title: question,
         catogery: category,
         date: moment().format("DD-MM-YYYY dddd"),
       };
 
-      // Make an API call to update the question
+      // update the question
       const response = await axios.put(
         `http://localhost:5000/questions/${row._id}`,
         updatedData
       );
 
-      // Assuming your backend responds with the updated question
       const updatedQuestion = response.data.question;
 
-      // Handle the updated data as needed
+      // log to console
       console.log("Updated Question:", updatedQuestion);
 
-      // Close the modal or perform other actions
+      // Close the component and popup Updated.
       CloseEvent();
-      Swal.fire(
-        "Submitted!",
-        "Your question has been submitted.",
-        "Success"
-      ).then(() => window.location.reload());
+      Swal.fire("Updated!", "Your question has been updated.", "success").then(
+        () => window.location.reload()
+      );
     } catch (error) {
+      // handle error
       console.error("Error updating question:", error);
-      // Handle error, show an alert, etc.
     }
   };
-
-  // //backend code for update the data base with time. make sure edit the whole code.
-
-  //   const createData = async()=>{
-  //     await addDoc(empCollectionRef,{
-  //         question : question,
-  //         category : category,
-  //         date : moment().format('MMMM Do YYYY, h:mm:ss a'),
-  //     });
-  //     getUser();
-  //     CloseEvent();
-  //                                                                                     After connected the database uncomment the below line.
-  //      Swal.fire("Submitted!", "Your question has been submitted.","Success");
-  //   };
-
-  // create a getUser(); to for update the list in db below this line.
 
   return (
     <>
@@ -113,7 +96,7 @@ function EditQuestion({ CloseEvent, row }) {
         style={{ position: "absolute", top: "0", right: "0" }}
         onClick={CloseEvent}
       >
-        <closeIcon />
+        <CloseIcon />
       </IconButton>
       <Box height={20} />
       <Grid container spacing={2}>
@@ -131,22 +114,24 @@ function EditQuestion({ CloseEvent, row }) {
       <Box height={20} />
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField
-            id="standard-select-currency"
-            select
-            label="Category"
-            value={category}
-            onChange={handleCategory}
-            helperText="Please select the question type"
-            variant="standard"
-            sx={{ minWidth: "100%" }}
-          >
-            {modules.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+          <FormControl fullWidth>
+            <InputLabel id="standard-select-currency-label">
+              Category
+            </InputLabel>
+            <Select
+              labelId="standard-select-currency-label"
+              id="standard-select-currency"
+              value={category}
+              onChange={handleCategory}
+              label="Category"
+            >
+              {modules.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
       <Box height={20} />

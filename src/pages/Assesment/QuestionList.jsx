@@ -2,7 +2,7 @@
 
 // import TablePagination from "@mui/material/TablePagination";
 import Swal from "sweetalert2";
-import * as React from "react";
+// import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -24,6 +24,7 @@ import Modal from "@mui/material/Modal";
 import AddQuestion from "./AddQuestion";
 import EditQuestion from "./EditQuestion";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const style = {
   position: "absolute",
@@ -55,20 +56,20 @@ function createData(_id, question, category, date, action) {
 }
 
 export default function QuestionList() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(500);
-  const [open, setOpen] = React.useState(false);
-  const [editOpen, setEditOpen] = React.useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(500);
+  const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleEditOpen = () => setEditOpen(true);
   const handleClose = () => setOpen(false);
   const handleEditClose = () => setEditOpen(false);
-  const [editRowData, setEditRowData] = React.useState(null);
+  const [editRowData, setEditRowData] = useState(null);
 
-  const [rows, setRows] = React.useState([]);
+  const [rows, setRows] = useState([]);
 
-  React.useEffect(() => {
-    // Fetch questions from the server when the component mounts
+  useEffect(() => {
+    // Fetch questions from the server
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:5000/questions");
@@ -107,8 +108,6 @@ export default function QuestionList() {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.value) {
-        // deleteApi(id);
-        // console.log("delete question working");
         // delete the question
         const res = await axios.delete(
           `http://localhost:5000/questions/${_id}`
@@ -233,7 +232,6 @@ export default function QuestionList() {
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  // console.log(row);
                   const serialNumber = index + 1;
 
                   return (
@@ -261,7 +259,6 @@ export default function QuestionList() {
                             }}
                             onClick={() => {
                               deleteUser(row._id);
-                              // console.log(row);
                             }}
                           />
                         </Stack>
