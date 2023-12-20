@@ -238,18 +238,10 @@ export default function QuestionList() {
 
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                      <TableCell key={row._id} align="left">
-                        {serialNumber}
-                      </TableCell>
-                      <TableCell key={row._id} align={"left"}>
-                        {row.question}
-                      </TableCell>
-                      <TableCell key={row._id} align={"left"}>
-                        {row.category}
-                      </TableCell>
-                      <TableCell key={row._id} align={"left"}>
-                        {row.date}
-                      </TableCell>
+                      <TableCell align="left">{serialNumber}</TableCell>
+                      <TableCell align={"left"}>{row.question}</TableCell>
+                      <TableCell align={"left"}>{row.category}</TableCell>
+                      <TableCell align={"left"}>{row.date}</TableCell>
                       <TableCell align="left">
                         <Stack spacing={2} direction="row">
                           <EditIcon
